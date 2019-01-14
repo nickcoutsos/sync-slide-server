@@ -1,0 +1,17 @@
+{
+  "name": "sync-slide-server",
+  "version": "1.0.0",
+  "description": "A barebones websocket pubsub server for syncing slide state",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "2.8.5",
+    "express": "4.16.4",
+    "express-jwt": "5.3.1",
+    "express-ws": "4.0.0"
+  }
+}
