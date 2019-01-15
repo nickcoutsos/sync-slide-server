@@ -41,10 +41,18 @@ app.post('/topics/:topic', expressJwt({
 })
 
 app.ws('/topics/:topic', (ws, req) => {
+  const { remoteAddress } = req.connection
   const { topic } = req.params
   registerSubscriber(topic, ws)
 
+  console.info(`[${new Date()}] [${remoteAddress}] connected`)
+
+  ws.onerror = err => {
+    console.error(`[${new Date()}] [${remoteAddress}]`, err)
+  }
+
   ws.onclose = () => {
+    console.info(`[${new Date()}] [${remoteAddress}] disconnected`)
     const index = subscribersByTopic[topic].indexOf(ws)
     subscribersByTopic[topic].splice(index, 1)
   }
