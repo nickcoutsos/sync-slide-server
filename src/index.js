@@ -2,6 +2,7 @@ const express = require('express')
 const expressWs = require('express-ws')
 const expressJwt = require('express-jwt')
 const cors = require('cors')
+const WebSocket = require('ws')
 
 const app = express()
 const subscribersByTopic = {}
@@ -34,7 +35,9 @@ app.post('/topics/:topic', expressJwt({
   req.on('end', () => {
     const body = buf.join('')
     for (let i = 0; i < subscribers.length; i++) {
-      subscribers[i].send(body)
+      if (subscribers[i].readyState === WebSocket.OPEN) {
+        subscribers[i].send(body)
+      }
     }
     res.sendStatus(200)
   })
@@ -43,6 +46,7 @@ app.post('/topics/:topic', expressJwt({
 app.ws('/topics/:topic', (ws, req) => {
   const { remoteAddress } = req.connection
   const { topic } = req.params
+
   registerSubscriber(topic, ws)
 
   console.info(`[${new Date()}] [${remoteAddress}] connected`)
